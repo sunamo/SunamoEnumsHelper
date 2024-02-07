@@ -3,11 +3,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>24.2.1.3</Version>
+    <Version>24.2.6.2</Version>
     <Description>Getting values from enums with some options</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SunamoExceptions" Version="24.2.1.1" />
+    <PackageReference Include="SunamoExceptions" Version="24.2.6.3" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>$(DefineConstants);ASYNC</DefineConstants>
