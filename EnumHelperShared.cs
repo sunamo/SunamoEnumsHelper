@@ -27,7 +27,7 @@ public static partial class EnumHelper
         T nope;
         if (!IncludeNope)
         {
-            if (Enum.TryParse<T>(SunamoValues.Constants.CodeElementsConstants.NopeValue, out nope))
+            if (Enum.TryParse<T>(CodeElementsConstants.NopeValue, out nope))
             {
                 values.Remove(nope);
             }
@@ -51,7 +51,7 @@ public static partial class EnumHelper
             }
         }
 
-        if (Enum.TryParse<T>( SunamoValues.Constants.CodeElementsConstants.NoneValue, out nope))
+        if (Enum.TryParse<T>( CodeElementsConstants.NoneValue, out nope))
         {
             values.Remove(nope);
         }

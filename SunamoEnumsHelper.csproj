@@ -7,6 +7,7 @@
     <Description>Getting values from enums with some options</Description>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\SunamoValues\Constants\CodeElementsConstants.cs" Link="_linked\SunamoValues\Constants\CodeElementsConstants.cs" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>$(DefineConstants);ASYNC;SunamoEnumsHelper</DefineConstants>

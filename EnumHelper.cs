@@ -12,7 +12,7 @@ public static partial class EnumHelper
             if (ds.HasFlag(item))
             {
                 var ts = item.ToString();
-                if (ts != SunamoValues.Constants.CodeElementsConstants.NopeValue)
+                if (ts != CodeElementsConstants.NopeValue)
                 {
                     sb.Append(ts + comma);
                 }
