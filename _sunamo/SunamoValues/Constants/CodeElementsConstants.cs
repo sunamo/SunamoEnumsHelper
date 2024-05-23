@@ -1,10 +1,10 @@
 namespace SunamoEnumsHelper;
 
 
-internal class CodeElementsConstants
+public class CodeElementsConstants
 {
-    internal const string NopeValue = "Nope";
-    internal const string NoneValue = "None";
-    internal const string SingleCommentCsharp = "//";
-    internal const string XmlDocumentationCsharp = "///";
+    public const string NopeValue = "Nope";
+    public const string NoneValue = "None";
+    public const string SingleCommentCsharp = "//";
+    public const string XmlDocumentationCsharp = "///";
 }
