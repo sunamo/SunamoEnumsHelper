@@ -1,3 +1,5 @@
+
+namespace SunamoEnumsHelper;
 public class AllStrings
 {
     public const string dot = ".";

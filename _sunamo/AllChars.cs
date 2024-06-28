@@ -1,3 +1,5 @@
+
+namespace SunamoEnumsHelper;
 public class AllChars
 {
     public static List<char> vsZnakyWithoutSpecial;
