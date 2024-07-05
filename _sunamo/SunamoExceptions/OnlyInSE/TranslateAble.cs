@@ -1,4 +1,3 @@
-
 namespace SunamoEnumsHelper._sunamo.SunamoExceptions.OnlyInSE;
 internal class TranslateAble
 {
