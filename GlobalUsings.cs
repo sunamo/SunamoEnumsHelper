@@ -6,6 +6,12 @@ global using System.Data;
 global using System.Collections.Generic;
 global using System.Collections;
 global using System.IO;
-
 global using System.Diagnostics.CodeAnalysis;
 global using System.Reflection;
+global using SunamoEnumsHelper;
+global using SunamoEnumsHelper._sunamo.SunamoStringGetLines;
+global using SunamoEnumsHelper._sunamo.SunamoValues;
+global using SunamoEnumsHelper._sunamo.SunamoXlfKeys;
+global using SunamoEnumsHelper._sunamo.SunamoExceptions.OnlyInSE;
+global using SunamoEnumsHelper._sunamo.SunamoExceptions._AddedToAllCsproj;
+global using SunamoEnumsHelper._sunamo.SunamoValues.Constants;

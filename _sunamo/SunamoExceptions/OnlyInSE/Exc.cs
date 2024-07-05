@@ -1,5 +1,5 @@
 
-namespace SunamoEnumsHelper;
+namespace SunamoEnumsHelper._sunamo.SunamoExceptions.OnlyInSE;
 using System.Diagnostics;
 using System.Text;
 

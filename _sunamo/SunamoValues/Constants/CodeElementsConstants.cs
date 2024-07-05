@@ -1,4 +1,4 @@
-namespace SunamoEnumsHelper;
+namespace SunamoEnumsHelper._sunamo.SunamoValues.Constants;
 
 
 internal class CodeElementsConstants
