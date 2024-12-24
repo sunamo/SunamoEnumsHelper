@@ -144,7 +144,7 @@ public static class EnumHelper
         if (secondIsAll) def = 1;
 
         if (typeof(T).BaseType != typeof(Enum)) throw new Exception("Base type must be enum");
-        //throw new Exception("  " + sess.i18n(XlfKeys.mustBeAnEnumType));
+        //throw new Exception("  " + Translate.FromKey(XlfKeys.mustBeAnEnumType));
         var values = Enum.GetValues(typeof(T)).Cast<byte>().ToArray();
         valuesInverted = values.Select(v => ~v).Cast<byte>().ToArray();
         result = new List<T>();
@@ -229,7 +229,7 @@ public static class EnumHelper
         if (secondIsAll) def = 1;
 
         if (typeof(T).BaseType != typeof(Enum)) throw new Exception("T must be derived from Enum type");
-        //throw new Exception("  " + sess.i18n(XlfKeys.mustBeAnEnumType));
+        //throw new Exception("  " + Translate.FromKey(XlfKeys.mustBeAnEnumType));
         var values = Enum.GetValues(typeof(T)).Cast<int>().ToArray();
         valuesInverted = values.Select(v => ~v).ToArray();
         result = new List<T>();
