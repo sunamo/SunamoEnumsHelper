@@ -2,8 +2,6 @@ namespace SunamoEnumsHelper._sunamo.SunamoExceptions;
 internal partial class ThrowEx
 {
 
-    internal static bool IsNullOrEmpty(string argName, string argValue)
-    { return ThrowIsNotNull(Exceptions.IsNullOrWhitespace(FullNameOfExecutedCode(), argName, argValue, true)); }
 
     #region Other
     internal static string FullNameOfExecutedCode()
