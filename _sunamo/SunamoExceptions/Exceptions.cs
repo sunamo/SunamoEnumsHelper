@@ -4,10 +4,9 @@ internal sealed partial class Exceptions
 {
     #region Other
 
-    internal static Tuple<string, string, string> PlaceOfException(
-bool fillAlsoFirstTwo = true)
-{}    #region IsNullOrWhitespace
+#region IsNullOrWhitespace
     readonly static StringBuilder sbAdditionalInfoInner = new();
     readonly static StringBuilder sbAdditionalInfo = new();
     #endregion
+#endregion
 }
