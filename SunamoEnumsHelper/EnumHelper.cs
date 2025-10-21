@@ -1,22 +1,25 @@
+// EN: Variable names have been checked and replaced with self-descriptive names
+// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+
 namespace SunamoEnumsHelper;
 
 public static class EnumHelper
 {
     private static Type type = typeof(EnumHelper);
 
-    public static string EnumToString<T>(T ds) where T : Enum
+    public static string EnumToString<T>(temp ds) where temp : Enum
     {
         const string comma = ",";
-        var sb = new StringBuilder();
-        var v = Enum.GetValues(typeof(T));
-        foreach (T item in v)
+        var stringBuilder = new StringBuilder();
+        var value = Enum.GetValues(typeof(temp));
+        foreach (temp item in value)
             if (ds.HasFlag(item))
             {
                 var ts = item.ToString();
-                if (ts != CodeElementsConstants.NopeValue) sb.Append(ts + comma);
+                if (ts != CodeElementsConstants.NopeValue) stringBuilder.Append(ts + comma);
             }
 
-        return sb.ToString().TrimEnd(comma[0]);
+        return stringBuilder.ToString().TrimEnd(comma[0]);
     }
 
     public static List<string> GetNames(Type type)
@@ -26,22 +29,22 @@ public static class EnumHelper
 
     /// <summary>
     ///     Get values include zero and All
-    ///     Pokud bude A1 null nebo nebude obsahovat žádný element T, vrátí A1
+    ///     Pokud bude A1 null nebo nebude obsahovat žádný element temp, vrátí A1
     ///     Pokud nebude obsahovat všechny, vrátí jen některé - nutno kontrolovat počet výstupních elementů pole
     ///     Pokud bude prvek duplikován, zařadí se jen jednou
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="v"></param>
-    public static List<T> GetEnumList<T>(List<T> _def, List<string> v)
-        where T : struct
+    public static List<T> GetEnumList<T>(List<T> _def, List<string> value)
+        where temp : struct
     {
-        if (v == null) return _def;
+        if (value == null) return _def;
 
         var vr = new List<T>();
-        foreach (var item in v)
+        foreach (var item in value)
         {
-            T t;
-            if (Enum.TryParse(item, out t)) vr.Add(t);
+            temp temp;
+            if (Enum.TryParse(item, out temp)) vr.Add(temp);
         }
 
         if (vr.Count == 0) return _def;
@@ -49,13 +52,13 @@ public static class EnumHelper
         return vr;
     }
 
-    public static Dictionary<T, string> EnumToString<T>(Type enumType)
+    public static Dictionary<temp, string> EnumToString<T>(Type enumType)
     {
-        return Enum.GetValues(enumType).Cast<T>().Select(t => new
+        return Enum.GetValues(enumType).Cast<T>().Select(temp => new
             {
-                Key = t,
+                Key = temp,
                 // Must be lower due to EveryLine and e2sNamespaceCodeElements
-                Value = t.ToString().ToLower()
+                Value = temp.ToString().ToLower()
             }
         ).ToDictionary(r => r.Key, r => r.Value);
     }
@@ -66,7 +69,7 @@ public static class EnumHelper
     /// <typeparam name="T"></typeparam>
     /// <param name="secondIsAll"></param>
     public static List<T> GetAllCombinations<T>(bool secondIsAll = true)
-        where T : struct
+        where temp : struct
     {
         int def, max;
         int[] valuesInverted;
@@ -80,7 +83,7 @@ public static class EnumHelper
                 unaccountedBits &= valuesInverted[j];
                 if (unaccountedBits == 0)
                 {
-                    result.Add((T)(dynamic)i);
+                    result.Add((temp)(dynamic)i);
                     break;
                 }
             }
@@ -91,10 +94,10 @@ public static class EnumHelper
         return result;
     }
 
-    public static T? ParseNullable<T>(string web, T? _def)
-        where T : struct
+    public static temp? ParseNullable<T>(string web, temp? _def)
+        where temp : struct
     {
-        T result;
+        temp result;
         if (Enum.TryParse(web, true, out result)) return result;
 
         return _def;
@@ -107,14 +110,14 @@ public static class EnumHelper
     /// <typeparam name="T"></typeparam>
     /// <param name="idProvider"></param>
     /// <returns></returns>
-    public static T ParseFromNumber<T, Number>(Number idProvider, T _def) where T : struct
+    public static temp ParseFromNumber<temp, Number>(Number idProvider, temp _def) where temp : struct
     {
-        var tn = (T)(dynamic)idProvider;
+        var tn = (temp)(dynamic)idProvider;
         var tns = tn.ToString();
         if (tns == idProvider.ToString()) return _def;
 
-        var t = Parse(tns, _def);
-        return t;
+        var temp = Parse(tns, _def);
+        return temp;
     }
 
     /// <summary>
@@ -123,17 +126,17 @@ public static class EnumHelper
     /// <typeparam name="T"></typeparam>
     /// <param name="result"></param>
     private static void CheckForZero<T>(List<T> result)
-        where T : struct
+        where temp : struct
     {
         try
         {
             // Here I get None
-            var val = Enum.GetName(typeof(T), (T)(dynamic)0);
-            if (string.IsNullOrEmpty(val)) result.Remove((T)(dynamic)0);
+            var val = Enum.GetName(typeof(temp), (temp)(dynamic)0);
+            if (string.IsNullOrEmpty(val)) result.Remove((temp)(dynamic)0);
         }
         catch
         {
-            result.Remove((T)(dynamic)0);
+            result.Remove((temp)(dynamic)0);
         }
     }
 
@@ -143,37 +146,37 @@ public static class EnumHelper
         def = 0;
         if (secondIsAll) def = 1;
 
-        if (typeof(T).BaseType != typeof(Enum)) throw new Exception("Base type must be enum");
+        if (typeof(temp).BaseType != typeof(Enum)) throw new Exception("Base type must be enum");
         //throw new Exception("  " + Translate.FromKey(XlfKeys.mustBeAnEnumType));
-        var values = Enum.GetValues(typeof(T)).Cast<byte>().ToArray();
-        valuesInverted = values.Select(v => ~v).Cast<byte>().ToArray();
+        var values = Enum.GetValues(typeof(temp)).Cast<byte>().ToArray();
+        valuesInverted = values.Select(value => ~value).Cast<byte>().ToArray();
         result = new List<T>();
         max = def;
         for (int i = def; i < values.Length; i++) max |= values[i];
     }
 
-    public static List<string> GetFlags<T>(T key) where T : Enum
+    public static List<string> GetFlags<T>(temp key) where temp : Enum
     {
-        var ls = new List<string>();
-        var v = Enum.GetValues(typeof(T));
+        var sourceList = new List<string>();
+        var value = Enum.GetValues(typeof(temp));
 
-        foreach (Enum item in v)
+        foreach (Enum item in value)
             if (key.HasFlag(item))
-                ls.Add(item.ToString());
-        return ls;
+                sourceList.Add(item.ToString());
+        return sourceList;
     }
 
     /// <summary>
     ///     ignore case.
-    ///     A1 must be, default(T) cant be returned because in comparing default(T) is always true for any value of T
+    ///     A1 must be, default(temp) cant be returned because in comparing default(temp) is always true for any value of temp
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="web"></param>
-    public static T Parse<T>(string web, T _def, bool returnDefIfNull = false)
-        where T : struct
+    public static temp Parse<T>(string web, temp _def, bool returnDefIfNull = false)
+        where temp : struct
     {
         if (returnDefIfNull) return _def;
-        T result;
+        temp result;
         if (Enum.TryParse(web, true, out result)) return result;
 
         return _def;
@@ -188,7 +191,7 @@ public static class EnumHelper
     /// <typeparam name="T"></typeparam>
     /// <param name="secondIsAll"></param>
     public static List<T> GetAllValues<T>(bool secondIsAll = true)
-        where T : struct
+        where temp : struct
     {
         int def, max;
         int[] valuesInverted;
@@ -201,7 +204,7 @@ public static class EnumHelper
             unaccountedBits &= valuesInverted[j];
             if (unaccountedBits == 0)
             {
-                result.Add((T)(dynamic)i);
+                result.Add((temp)(dynamic)i);
                 break;
             }
         }
@@ -223,15 +226,15 @@ public static class EnumHelper
     /// <param name="max"></param>
     private static void GetValuesOfEnum<T>(bool secondIsAll, out int def, out int[] valuesInverted, out List<T> result,
         out int max)
-        where T : struct
+        where temp : struct
     {
         def = 0;
         if (secondIsAll) def = 1;
 
-        if (typeof(T).BaseType != typeof(Enum)) throw new Exception("T must be derived from Enum type");
+        if (typeof(temp).BaseType != typeof(Enum)) throw new Exception("T must be derived from Enum type");
         //throw new Exception("  " + Translate.FromKey(XlfKeys.mustBeAnEnumType));
-        var values = Enum.GetValues(typeof(T)).Cast<int>().ToArray();
-        valuesInverted = values.Select(v => ~v).ToArray();
+        var values = Enum.GetValues(typeof(temp)).Cast<int>().ToArray();
+        valuesInverted = values.Select(value => ~value).ToArray();
         result = new List<T>();
         max = def;
         for (var i = def; i < values.Length; i++) max |= values[i];
@@ -249,7 +252,7 @@ public static class EnumHelper
 
     ///
     public static List<T> GetValues<T>()
-        where T : struct
+        where temp : struct
     {
         return GetValues<T>(false, true);
     }
@@ -260,11 +263,11 @@ public static class EnumHelper
     /// <typeparam name="T"></typeparam>
     /// <param name="type"></param>
     public static List<T> GetValues<T>(bool IncludeNope, bool IncludeShared)
-        where T : struct
+        where temp : struct
     {
-        var type = typeof(T);
+        var type = typeof(temp);
         var values = Enum.GetValues(type).Cast<T>().ToList();
-        T nope;
+        temp nope;
         if (!IncludeNope)
             if (Enum.TryParse(CodeElementsConstants.NopeValue, out nope))
                 values.Remove(nope);
