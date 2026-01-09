@@ -10,18 +10,18 @@ public static class EnumHelper
     /// Converts enum flags to a comma-separated string representation.
     /// </summary>
     /// <typeparam name="T">The enum type.</typeparam>
-    /// <param name="ds">The enum value to convert.</param>
+    /// <param name="enumValue">The enum value to convert.</param>
     /// <returns>A comma-separated string of enum flag names, excluding "Nope" values.</returns>
-    public static string EnumToString<T>(T ds) where T : Enum
+    public static string EnumToString<T>(T enumValue) where T : Enum
     {
         const string comma = ",";
         var stringBuilder = new StringBuilder();
-        var value = Enum.GetValues(typeof(T));
-        foreach (T item in value)
-            if (ds.HasFlag(item))
+        var allValues = Enum.GetValues(typeof(T));
+        foreach (T item in allValues)
+            if (enumValue.HasFlag(item))
             {
-                var ts = item.ToString();
-                if (ts != CodeElementsConstants.NopeValue) stringBuilder.Append(ts + comma);
+                var enumName = item.ToString();
+                if (enumName != CodeElementsConstants.NopeValue) stringBuilder.Append(enumName + comma);
             }
 
         return stringBuilder.ToString().TrimEnd(comma[0]);
@@ -38,30 +38,30 @@ public static class EnumHelper
     }
 
     /// <summary>
-    ///     Get values include zero and All
-    ///     Pokud bude A1 null nebo nebude obsahovat žádný element temp, vrátí A1
-    ///     Pokud nebude obsahovat všechny, vrátí jen některé - nutno kontrolovat počet výstupních elementů pole
-    ///     Pokud bude prvek duplikován, zařadí se jen jednou
+    /// Parses a list of string values into enum values.
+    /// Get values include zero and All.
+    /// If parsing fails or list is null, returns the default list.
+    /// Duplicates are added only once.
     /// </summary>
     /// <typeparam name="T">The enum type.</typeparam>
-    /// <param name="_def">The default list to return if parsing fails.</param>
-    /// <param name="value">The list of string values to parse into enum values.</param>
+    /// <param name="defaultValue">The default list to return if parsing fails.</param>
+    /// <param name="valuesToParse">The list of string values to parse into enum values.</param>
     /// <returns>A list of parsed enum values, or the default list if parsing fails.</returns>
-    public static List<T> GetEnumList<T>(List<T> _def, List<string> value)
+    public static List<T> GetEnumList<T>(List<T> defaultValue, List<string> valuesToParse)
         where T : struct
     {
-        if (value == null) return _def;
+        if (valuesToParse == null) return defaultValue;
 
-        var vr = new List<T>();
-        foreach (var item in value)
+        var result = new List<T>();
+        foreach (var item in valuesToParse)
         {
-            T enumValue;
-            if (Enum.TryParse(item, out enumValue)) vr.Add(enumValue);
+            T parsedEnum;
+            if (Enum.TryParse(item, out parsedEnum)) result.Add(parsedEnum);
         }
 
-        if (vr.Count == 0) return _def;
+        if (result.Count == 0) return defaultValue;
 
-        return vr;
+        return result;
     }
 
     /// <summary>
@@ -82,21 +82,22 @@ public static class EnumHelper
     }
 
     /// <summary>
-    ///     Get all without zero and All.
+    /// Gets all enum combinations without zero and All values.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="secondIsAll"></param>
-    public static List<T> GetAllCombinations<T>(bool secondIsAll = true)
+    /// <typeparam name="T">The enum type.</typeparam>
+    /// <param name="isSecondAll">If true, starts from index [1]. Otherwise from [0].</param>
+    /// <returns>A list of all valid enum combinations.</returns>
+    public static List<T> GetAllCombinations<T>(bool isSecondAll = true)
         where T : struct
     {
-        int def, max;
+        int defaultIndex, max;
         int[] valuesInverted;
         List<T> result;
-        GetValuesOfEnum(secondIsAll, out def, out valuesInverted, out result, out max);
-        for (var i = def; i <= max; i++)
+        GetValuesOfEnum(isSecondAll, out defaultIndex, out valuesInverted, out result, out max);
+        for (var i = defaultIndex; i <= max; i++)
         {
             var unaccountedBits = i;
-            for (var j = def; j < valuesInverted.Length; j++)
+            for (var j = defaultIndex; j < valuesInverted.Length; j++)
             {
                 unaccountedBits &= valuesInverted[j];
                 if (unaccountedBits == 0)
@@ -116,51 +117,53 @@ public static class EnumHelper
     /// Parses a string to a nullable enum value, ignoring case.
     /// </summary>
     /// <typeparam name="T">The enum type to parse to.</typeparam>
-    /// <param name="web">The string to parse.</param>
-    /// <param name="_def">The default nullable value to return if parsing fails.</param>
+    /// <param name="text">The string to parse.</param>
+    /// <param name="defaultValue">The default nullable value to return if parsing fails.</param>
     /// <returns>The parsed enum value or the default value if parsing fails.</returns>
-    public static T? ParseNullable<T>(string web, T? _def)
+    public static T? ParseNullable<T>(string text, T? defaultValue)
         where T : struct
     {
         T result;
-        if (Enum.TryParse(web, true, out result)) return result;
+        if (Enum.TryParse(text, true, out result)) return result;
 
-        return _def;
+        return defaultValue;
     }
 
 
     /// <summary>
-    ///     když se snažím přetypovat číslo na vyčet kde toto číslo není, tak přetypuje a při TS vrací číslo
+    /// Parses a numeric value to an enum value.
+    /// When trying to cast a number to an enum where this number doesn't exist, it casts and returns the number as string.
     /// </summary>
     /// <typeparam name="T">The enum type to parse to.</typeparam>
     /// <typeparam name="Number">The numeric type of the input value.</typeparam>
-    /// <param name="idProvider">The numeric value to convert to enum.</param>
-    /// <param name="_def">The default enum value to return if conversion fails.</param>
+    /// <param name="numericValue">The numeric value to convert to enum.</param>
+    /// <param name="defaultValue">The default enum value to return if conversion fails.</param>
     /// <returns>The parsed enum value or the default value if conversion fails.</returns>
-    public static T ParseFromNumber<T, Number>(Number idProvider, T _def) where T : struct
+    public static T ParseFromNumber<T, Number>(Number numericValue, T defaultValue) where T : struct
     {
-        var tn = (T)(dynamic)idProvider!;
-        var tns = tn.ToString();
-        var idProviderString = idProvider?.ToString();
-        if (tns == idProviderString) return _def;
+        var convertedEnum = (T)(dynamic)numericValue!;
+        var convertedEnumString = convertedEnum.ToString();
+        var numericValueString = numericValue?.ToString();
+        if (convertedEnumString == numericValueString) return defaultValue;
 
-        var enumValue = Parse(tns!, _def);
+        var enumValue = Parse(convertedEnumString!, defaultValue);
         return enumValue;
     }
 
     /// <summary>
-    ///     Tested with EnumA
+    /// Checks for and removes zero value from the enum result list.
+    /// Tested with EnumA.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="result"></param>
+    /// <typeparam name="T">The enum type.</typeparam>
+    /// <param name="result">The list to check and potentially remove zero value from.</param>
     private static void CheckForZero<T>(List<T> result)
         where T : struct
     {
         try
         {
             // Here I get None
-            var val = Enum.GetName(typeof(T), (T)(dynamic)0);
-            if (string.IsNullOrEmpty(val)) result.Remove((T)(dynamic)0);
+            var enumName = Enum.GetName(typeof(T), (T)(dynamic)0);
+            if (string.IsNullOrEmpty(enumName)) result.Remove((T)(dynamic)0);
         }
         catch
         {
@@ -168,19 +171,27 @@ public static class EnumHelper
         }
     }
 
-    private static void GetValuesOfEnumByte<T>(bool secondIsAll, out byte def, out byte[] valuesInverted,
+    /// <summary>
+    /// Gets enum values as byte arrays with inverted values for bit operations.
+    /// </summary>
+    /// <typeparam name="T">The enum type.</typeparam>
+    /// <param name="isSecondAll">If true, starts from index [1]. Otherwise from [0].</param>
+    /// <param name="defaultValue">Output: The default starting value (0 or 1).</param>
+    /// <param name="valuesInverted">Output: Array of bitwise inverted enum values.</param>
+    /// <param name="result">Output: Empty result list to be filled.</param>
+    /// <param name="max">Output: Maximum combined enum value.</param>
+    private static void GetValuesOfEnumByte<T>(bool isSecondAll, out byte defaultValue, out byte[] valuesInverted,
         out List<T> result, out byte max)
     {
-        def = 0;
-        if (secondIsAll) def = 1;
+        defaultValue = 0;
+        if (isSecondAll) defaultValue = 1;
 
         if (typeof(T).BaseType != typeof(Enum)) throw new Exception("Base type must be enum");
-        //throw new Exception("  " + Translate.FromKey(XlfKeys.mustBeAnEnumType));
         var values = Enum.GetValues(typeof(T)).Cast<int>().Select(v => (byte)v).ToArray();
         valuesInverted = values.Select(value => (byte)~value).ToArray();
         result = new List<T>();
-        max = def;
-        for (int i = def; i < values.Length; i++) max |= values[i];
+        max = defaultValue;
+        for (int i = defaultValue; i < values.Length; i++) max |= values[i];
     }
 
     /// <summary>
@@ -201,42 +212,43 @@ public static class EnumHelper
     }
 
     /// <summary>
-    ///     ignore case.
-    ///     A1 must be, default(T) cant be returned because in comparing default(T) is always true for any value of T
+    /// Parses a string to an enum value, ignoring case.
+    /// Default value must be provided - default(T) cannot be returned because in comparing default(T) is always true for any value of T.
     /// </summary>
     /// <typeparam name="T">The enum type to parse to.</typeparam>
-    /// <param name="web">The string to parse.</param>
-    /// <param name="_def">The default enum value to return if parsing fails.</param>
-    /// <param name="returnDefIfNull">If true, returns the default value immediately without parsing.</param>
+    /// <param name="text">The string to parse.</param>
+    /// <param name="defaultValue">The default enum value to return if parsing fails.</param>
+    /// <param name="isReturningDefIfNull">If true, returns the default value immediately without parsing.</param>
     /// <returns>The parsed enum value or the default value if parsing fails.</returns>
-    public static T Parse<T>(string web, T _def, bool returnDefIfNull = false)
+    public static T Parse<T>(string text, T defaultValue, bool isReturningDefIfNull = false)
         where T : struct
     {
-        if (returnDefIfNull) return _def;
+        if (isReturningDefIfNull) return defaultValue;
         T result;
-        if (Enum.TryParse(web, true, out result)) return result;
+        if (Enum.TryParse(text, true, out result)) return result;
 
-        return _def;
+        return defaultValue;
     }
 
     #region GetAllValues - unlike GetValues in EnumHelperShared.cs not exclude anything. GetValues can exclude Nope,Shared,etc.
 
     /// <summary>
-    ///     If A1, will start from [1]. Otherwise from [0]
-    ///     Get all without zero and All.
+    /// Gets all enum values without zero and All.
+    /// If isSecondAll is true, will start from [1]. Otherwise from [0].
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="secondIsAll"></param>
-    public static List<T> GetAllValues<T>(bool secondIsAll = true)
+    /// <typeparam name="T">The enum type.</typeparam>
+    /// <param name="isSecondAll">If true, starts from index [1]. Otherwise from [0].</param>
+    /// <returns>A list of all enum values excluding zero and All.</returns>
+    public static List<T> GetAllValues<T>(bool isSecondAll = true)
         where T : struct
     {
-        int def, max;
+        int defaultIndex, max;
         int[] valuesInverted;
         List<T> result;
-        GetValuesOfEnum(secondIsAll, out def, out valuesInverted, out result, out max);
+        GetValuesOfEnum(isSecondAll, out defaultIndex, out valuesInverted, out result, out max);
         var i = max;
         var unaccountedBits = i;
-        for (var j = def; j < valuesInverted.Length; j++)
+        for (var j = defaultIndex; j < valuesInverted.Length; j++)
         {
             unaccountedBits &= valuesInverted[j];
             if (unaccountedBits == 0)
@@ -251,30 +263,30 @@ public static class EnumHelper
     }
 
     /// <summary>
-    ///     If A1, will start from [1]. Otherwise from [0]
-    ///     Enem values must be castable to int
-    ///     Cant be use second generic parameter, due to difficult operations like ~v or |=
+    /// Gets enum values as int arrays with inverted values for bit operations.
+    /// If isSecondAll is true, will start from [1]. Otherwise from [0].
+    /// Enum values must be castable to int.
+    /// Cannot use second generic parameter, due to difficult operations like ~v or |=.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="secondIsAll"></param>
-    /// <param name="def"></param>
-    /// <param name="valuesInverted"></param>
-    /// <param name="result"></param>
-    /// <param name="max"></param>
-    private static void GetValuesOfEnum<T>(bool secondIsAll, out int def, out int[] valuesInverted, out List<T> result,
+    /// <typeparam name="T">The enum type.</typeparam>
+    /// <param name="isSecondAll">If true, starts from index [1]. Otherwise from [0].</param>
+    /// <param name="defaultIndex">Output: The default starting index (0 or 1).</param>
+    /// <param name="valuesInverted">Output: Array of bitwise inverted enum values.</param>
+    /// <param name="result">Output: Empty result list to be filled.</param>
+    /// <param name="max">Output: Maximum combined enum value.</param>
+    private static void GetValuesOfEnum<T>(bool isSecondAll, out int defaultIndex, out int[] valuesInverted, out List<T> result,
         out int max)
         where T : struct
     {
-        def = 0;
-        if (secondIsAll) def = 1;
+        defaultIndex = 0;
+        if (isSecondAll) defaultIndex = 1;
 
         if (typeof(T).BaseType != typeof(Enum)) throw new Exception("T must be derived from Enum type");
-        //throw new Exception("  " + Translate.FromKey(XlfKeys.mustBeAnEnumType));
         var values = Enum.GetValues(typeof(T)).Cast<int>().ToArray();
         valuesInverted = values.Select(value => ~value).ToArray();
         result = new List<T>();
-        max = def;
-        for (var i = def; i < values.Length; i++) max |= values[i];
+        max = defaultIndex;
+        for (var i = defaultIndex; i < values.Length; i++) max |= values[i];
     }
 
     #endregion
@@ -294,35 +306,35 @@ public static class EnumHelper
     }
 
     /// <summary>
-    ///     Get all values expect of Nope/None
+    /// Gets all enum values with options to exclude Nope/None and Shared values.
     /// </summary>
     /// <typeparam name="T">The enum type.</typeparam>
-    /// <param name="IncludeNope">Whether to include "Nope" and "None" values.</param>
-    /// <param name="IncludeShared">Whether to include "Shared" or "Sha" values.</param>
+    /// <param name="isIncludingNope">Whether to include "Nope" and "None" values.</param>
+    /// <param name="isIncludingShared">Whether to include "Shared" or "Sha" values.</param>
     /// <returns>A list of enum values based on the specified inclusion criteria.</returns>
-    public static List<T> GetValues<T>(bool IncludeNope, bool IncludeShared)
+    public static List<T> GetValues<T>(bool isIncludingNope, bool isIncludingShared)
         where T : struct
     {
         var type = typeof(T);
         var values = Enum.GetValues(type).Cast<T>().ToList();
-        T nope;
-        if (!IncludeNope)
-            if (Enum.TryParse(CodeElementsConstants.NopeValue, out nope))
-                values.Remove(nope);
+        T enumValueToRemove;
+        if (!isIncludingNope)
+            if (Enum.TryParse(CodeElementsConstants.NopeValue, out enumValueToRemove))
+                values.Remove(enumValueToRemove);
 
-        if (!IncludeShared)
+        if (!isIncludingShared)
         {
             if (type.Name == "MySites")
             {
-                if (Enum.TryParse("Shared", out nope)) values.Remove(nope);
+                if (Enum.TryParse("Shared", out enumValueToRemove)) values.Remove(enumValueToRemove);
             }
             else
             {
-                if (Enum.TryParse("Sha", out nope)) values.Remove(nope);
+                if (Enum.TryParse("Sha", out enumValueToRemove)) values.Remove(enumValueToRemove);
             }
         }
 
-        if (Enum.TryParse(CodeElementsConstants.NoneValue, out nope)) values.Remove(nope);
+        if (Enum.TryParse(CodeElementsConstants.NoneValue, out enumValueToRemove)) values.Remove(enumValueToRemove);
 
         return values;
     }
