@@ -1,3 +1,4 @@
+// variables names: ok
 namespace RunnerEnumsHelper;
 
 internal class Program

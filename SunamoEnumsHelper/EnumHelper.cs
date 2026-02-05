@@ -68,11 +68,11 @@ public static class EnumHelper
     /// Converts an enum type to a dictionary mapping enum values to their lowercase string representations.
     /// </summary>
     /// <typeparam name="T">The enum value type.</typeparam>
-    /// <param name="enumType">The enum type to convert.</param>
+    /// <param name="type">The enum type to convert.</param>
     /// <returns>A dictionary mapping enum values to lowercase string names.</returns>
-    public static Dictionary<T, string> EnumToString<T>(Type enumType) where T : notnull
+    public static Dictionary<T, string> EnumToString<T>(Type type) where T : notnull
     {
-        return Enum.GetValues(enumType).Cast<T>().Select(enumValue => new
+        return Enum.GetValues(type).Cast<T>().Select(enumValue => new
             {
                 Key = enumValue,
                 // Must be lower due to EveryLine and e2sNamespaceCodeElements
@@ -155,43 +155,20 @@ public static class EnumHelper
     /// Tested with EnumA.
     /// </summary>
     /// <typeparam name="T">The enum type.</typeparam>
-    /// <param name="result">The list to check and potentially remove zero value from.</param>
-    private static void CheckForZero<T>(List<T> result)
+    /// <param name="list">The list to check and potentially remove zero value from.</param>
+    private static void CheckForZero<T>(List<T> list)
         where T : struct
     {
         try
         {
             // Here I get None
             var enumName = Enum.GetName(typeof(T), (T)(dynamic)0);
-            if (string.IsNullOrEmpty(enumName)) result.Remove((T)(dynamic)0);
+            if (string.IsNullOrEmpty(enumName)) list.Remove((T)(dynamic)0);
         }
         catch
         {
-            result.Remove((T)(dynamic)0);
+            list.Remove((T)(dynamic)0);
         }
-    }
-
-    /// <summary>
-    /// Gets enum values as byte arrays with inverted values for bit operations.
-    /// </summary>
-    /// <typeparam name="T">The enum type.</typeparam>
-    /// <param name="isSecondAll">If true, starts from index [1]. Otherwise from [0].</param>
-    /// <param name="defaultValue">Output: The default starting value (0 or 1).</param>
-    /// <param name="valuesInverted">Output: Array of bitwise inverted enum values.</param>
-    /// <param name="result">Output: Empty result list to be filled.</param>
-    /// <param name="max">Output: Maximum combined enum value.</param>
-    private static void GetValuesOfEnumByte<T>(bool isSecondAll, out byte defaultValue, out byte[] valuesInverted,
-        out List<T> result, out byte max)
-    {
-        defaultValue = 0;
-        if (isSecondAll) defaultValue = 1;
-
-        if (typeof(T).BaseType != typeof(Enum)) throw new Exception("Base type must be enum");
-        var values = Enum.GetValues(typeof(T)).Cast<int>().Select(v => (byte)v).ToArray();
-        valuesInverted = values.Select(value => (byte)~value).ToArray();
-        result = new List<T>();
-        max = defaultValue;
-        for (int i = defaultValue; i < values.Length; i++) max |= values[i];
     }
 
     /// <summary>
