@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="SunamoEnumsHelper.Tests\\SunamoEnumsHelper.Tests.csproj" />
+  <Project Path="RunnerEnumsHelper\\RunnerEnumsHelper.csproj" />
+  <Project Path="SunamoEnumsHelper\SunamoEnumsHelper.csproj" />
+</Solution>
