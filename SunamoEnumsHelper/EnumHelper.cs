@@ -55,8 +55,7 @@ public static class EnumHelper
         var result = new List<T>();
         foreach (var item in valuesToParse)
         {
-            T parsedEnum;
-            if (Enum.TryParse(item, out parsedEnum)) result.Add(parsedEnum);
+            if (Enum.TryParse(item, out T parsedEnum)) result.Add(parsedEnum);
         }
 
         if (result.Count == 0) return defaultValue;
@@ -90,10 +89,7 @@ public static class EnumHelper
     public static List<T> GetAllCombinations<T>(bool isSecondAll = true)
         where T : struct
     {
-        int defaultIndex, max;
-        int[] valuesInverted;
-        List<T> result;
-        GetValuesOfEnum(isSecondAll, out defaultIndex, out valuesInverted, out result, out max);
+        GetValuesOfEnum(isSecondAll, out int defaultIndex, out int[] valuesInverted, out List<T> result, out int max);
         for (var i = defaultIndex; i <= max; i++)
         {
             var unaccountedBits = i;
@@ -123,8 +119,7 @@ public static class EnumHelper
     public static T? ParseNullable<T>(string text, T? defaultValue)
         where T : struct
     {
-        T result;
-        if (Enum.TryParse(text, true, out result)) return result;
+        if (Enum.TryParse(text, true, out T result)) return result;
 
         return defaultValue;
     }
@@ -201,8 +196,7 @@ public static class EnumHelper
         where T : struct
     {
         if (isReturningDefIfNull) return defaultValue;
-        T result;
-        if (Enum.TryParse(text, true, out result)) return result;
+        if (Enum.TryParse(text, true, out T result)) return result;
 
         return defaultValue;
     }
@@ -219,10 +213,7 @@ public static class EnumHelper
     public static List<T> GetAllValues<T>(bool isSecondAll = true)
         where T : struct
     {
-        int defaultIndex, max;
-        int[] valuesInverted;
-        List<T> result;
-        GetValuesOfEnum(isSecondAll, out defaultIndex, out valuesInverted, out result, out max);
+        GetValuesOfEnum(isSecondAll, out int defaultIndex, out int[] valuesInverted, out List<T> result, out int max);
         var i = max;
         var unaccountedBits = i;
         for (var j = defaultIndex; j < valuesInverted.Length; j++)
@@ -294,24 +285,23 @@ public static class EnumHelper
     {
         var type = typeof(T);
         var values = Enum.GetValues(type).Cast<T>().ToList();
-        T enumValueToRemove;
         if (!isIncludingNope)
-            if (Enum.TryParse(CodeElementsConstants.NopeValue, out enumValueToRemove))
+            if (Enum.TryParse(CodeElementsConstants.NopeValue, out T enumValueToRemove))
                 values.Remove(enumValueToRemove);
 
         if (!isIncludingShared)
         {
             if (type.Name == "MySites")
             {
-                if (Enum.TryParse("Shared", out enumValueToRemove)) values.Remove(enumValueToRemove);
+                if (Enum.TryParse("Shared", out T enumValueToRemove2)) values.Remove(enumValueToRemove2);
             }
             else
             {
-                if (Enum.TryParse("Sha", out enumValueToRemove)) values.Remove(enumValueToRemove);
+                if (Enum.TryParse("Sha", out T enumValueToRemove2)) values.Remove(enumValueToRemove2);
             }
         }
 
-        if (Enum.TryParse(CodeElementsConstants.NoneValue, out enumValueToRemove)) values.Remove(enumValueToRemove);
+        if (Enum.TryParse(CodeElementsConstants.NoneValue, out T noneValue)) values.Remove(noneValue);
 
         return values;
     }
