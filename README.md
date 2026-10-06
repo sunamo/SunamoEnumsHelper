@@ -1,5 +1,10 @@
 # SunamoEnumsHelper
 
+## Short description
+
+Získávání hodnot z výčtových typů s několika volbami.
+
+
 Getting values from enums with some options
 
 ## Overview

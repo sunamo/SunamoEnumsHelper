@@ -1,0 +1,45 @@
+---
+schema_version: 11
+type: my-library
+category_override: none
+file_count: 23
+file_extensions: md:8, cs:7, csproj:3, noext:3, json:1, slnx:1, yml:1
+file_extensions_updated: 2026-10-04
+avg_lines_per_file: 56
+total_lines: 784
+metrics_lm: 2026-10-04 15:59:59
+move_to_legacy_percent: 3
+description_updated: 2026-10-04
+links_updated: 2026-10-04
+github_source_url: not run
+origin_status: own
+origin_checked: not run
+article_source_url: not run
+article_status: own
+article_checked: not run
+last_build_ok: not run
+last_build_date: not run
+last_tests_run_date: not run
+covered_lines: not run
+---
+
+## Description
+
+Získávání hodnot z výčtových typů s několika volbami.
+
+## Původ zdrojáků
+
+Staženo z GitHubu: **ne** — vlastní kód.
+
+- Ověřeno: Vlastní kód, remote origin patří účtu sunamo (sunamo/SunamoEnumsHelper.git).
+
+## Doporučení přesunu do legacy
+
+Doporučení přesunu do sunamocz-legacy.visualstudio.com: **3 %** — Aktivní balíček sady Sunamo, přesun do legacy se nedoporučuje.
+
+- Balíček je součástí aktivně udržované sbírky PlatformIndependentNuGetPackages.
+
+## Vazby na moje repa
+
+- Submoduly: žádné
+- ProjectReference / PackageReference: žádné
