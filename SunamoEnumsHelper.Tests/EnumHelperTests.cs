@@ -1,4 +1,3 @@
-// variables names: ok
 /// <summary>
 /// Test enum representing different browser types with flag values.
 /// </summary>
