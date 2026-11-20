@@ -1,8 +1,17 @@
 namespace SunamoEnumsHelper;
 
+/// <summary>
+/// Represents the enum helper type.
+/// </summary>
 public static class EnumHelper
 {
 
+    /// <summary>
+    /// Enum to string t.
+    /// </summary>
+    /// <typeparam name="T">The type T.</typeparam>
+    /// <param name="enumValue">The enum value.</param>
+    /// <returns>The enum to string t result.</returns>
     public static string EnumToString<T>(T enumValue) where T : Enum
     {
         const string comma = ",";
@@ -18,6 +27,11 @@ public static class EnumHelper
         return stringBuilder.ToString().TrimEnd(comma[0]);
     }
 
+    /// <summary>
+    /// Get names.
+    /// </summary>
+    /// <param name="type">The type.</param>
+    /// <returns>The get names result.</returns>
     public static List<string> GetNames(Type type)
     {
         return Enum.GetNames(type).ToList();
@@ -26,6 +40,13 @@ public static class EnumHelper
     // Get values include zero and All.
     // If parsing fails or list is null, returns the default list.
     // Duplicates are added only once.
+    /// <summary>
+    /// Get enum list t.
+    /// </summary>
+    /// <typeparam name="T">The type T.</typeparam>
+    /// <param name="defaultValue">The default value.</param>
+    /// <param name="valuesToParse">The values to parse.</param>
+    /// <returns>The get enum list t result.</returns>
     public static List<T> GetEnumList<T>(List<T> defaultValue, List<string> valuesToParse)
         where T : struct
     {
@@ -42,6 +63,12 @@ public static class EnumHelper
         return result;
     }
 
+    /// <summary>
+    /// Enum to string t.
+    /// </summary>
+    /// <typeparam name="T">The type T.</typeparam>
+    /// <param name="type">The type.</param>
+    /// <returns>The enum to string t result.</returns>
     public static Dictionary<T, string> EnumToString<T>(Type type) where T : notnull
     {
         return Enum.GetValues(type).Cast<T>().Select(enumValue => new
@@ -55,6 +82,12 @@ public static class EnumHelper
 
     // Gets all enum combinations without zero and All values.
     // If isSecondAll is true, starts from index [1]. Otherwise from [0].
+    /// <summary>
+    /// Get all combinations t.
+    /// </summary>
+    /// <typeparam name="T">The type T.</typeparam>
+    /// <param name="isSecondAll">The is second all.</param>
+    /// <returns>The get all combinations t result.</returns>
     public static List<T> GetAllCombinations<T>(bool isSecondAll = true)
         where T : struct
     {
@@ -78,6 +111,13 @@ public static class EnumHelper
         return result;
     }
 
+    /// <summary>
+    /// Parse nullable t.
+    /// </summary>
+    /// <typeparam name="T">The type T.</typeparam>
+    /// <param name="text">The text.</param>
+    /// <param name="defaultValue">The default value.</param>
+    /// <returns>The parse nullable t result.</returns>
     public static T? ParseNullable<T>(string text, T? defaultValue)
         where T : struct
     {
@@ -88,6 +128,12 @@ public static class EnumHelper
 
     // Parses a numeric value to an enum value.
     // When trying to cast a number to an enum where this number doesn't exist, it casts and returns the number as string.
+    /// <summary>
+    /// Parse from number t number.
+    /// </summary>
+    /// <param name="numericValue">The numeric value.</param>
+    /// <param name="defaultValue">The default value.</param>
+    /// <returns>The parse from number t number result.</returns>
     public static T ParseFromNumber<T, Number>(Number numericValue, T defaultValue) where T : struct
     {
         var convertedEnum = (T)(dynamic)numericValue!;
@@ -115,6 +161,12 @@ public static class EnumHelper
         }
     }
 
+    /// <summary>
+    /// Get flags t.
+    /// </summary>
+    /// <typeparam name="T">The type T.</typeparam>
+    /// <param name="key">The key.</param>
+    /// <returns>The get flags t result.</returns>
     public static List<string> GetFlags<T>(T key) where T : Enum
     {
         var sourceList = new List<string>();
@@ -127,6 +179,14 @@ public static class EnumHelper
     }
 
     // Default value must be provided - default(T) cannot be returned because in comparing default(T) is always true for any value of T.
+    /// <summary>
+    /// Parse t.
+    /// </summary>
+    /// <typeparam name="T">The type T.</typeparam>
+    /// <param name="text">The text.</param>
+    /// <param name="defaultValue">The default value.</param>
+    /// <param name="isReturningDefIfNull">The is returning def if null.</param>
+    /// <returns>The parse t result.</returns>
     public static T Parse<T>(string text, T defaultValue, bool isReturningDefIfNull = false)
         where T : struct
     {
@@ -140,6 +200,12 @@ public static class EnumHelper
 
     // Gets all enum values without zero and All.
     // If isSecondAll is true, will start from [1]. Otherwise from [0].
+    /// <summary>
+    /// Get all values t.
+    /// </summary>
+    /// <typeparam name="T">The type T.</typeparam>
+    /// <param name="isSecondAll">The is second all.</param>
+    /// <returns>The get all values t result.</returns>
     public static List<T> GetAllValues<T>(bool isSecondAll = true)
         where T : struct
     {
@@ -184,12 +250,24 @@ public static class EnumHelper
     #region GetValues - unlike GetAllValues in EnumHelper.cs can exclude Nope,Shared, etc.
 
     // Can be used only for int enums. For more control, use the overload with parameters.
+    /// <summary>
+    /// Get values t.
+    /// </summary>
+    /// <typeparam name="T">The type T.</typeparam>
+    /// <returns>The get values t result.</returns>
     public static List<T> GetValues<T>()
         where T : struct
     {
         return GetValues<T>(false, true);
     }
 
+    /// <summary>
+    /// Get values t.
+    /// </summary>
+    /// <typeparam name="T">The type T.</typeparam>
+    /// <param name="isIncludingNope">The is including nope.</param>
+    /// <param name="isIncludingShared">The is including shared.</param>
+    /// <returns>The get values t result.</returns>
     public static List<T> GetValues<T>(bool isIncludingNope, bool isIncludingShared)
         where T : struct
     {
